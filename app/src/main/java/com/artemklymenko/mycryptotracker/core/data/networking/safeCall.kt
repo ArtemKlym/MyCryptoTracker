@@ -1,7 +1,7 @@
-package com.artemklymenko.mycryptotracker.crypto.core.data.networking
+package com.artemklymenko.mycryptotracker.core.data.networking
 
-import com.artemklymenko.mycryptotracker.crypto.core.domain.util.NetworkError
-import com.artemklymenko.mycryptotracker.crypto.core.domain.util.Result
+import com.artemklymenko.mycryptotracker.core.domain.util.NetworkError
+import com.artemklymenko.mycryptotracker.core.domain.util.Result
 import io.ktor.client.statement.HttpResponse
 import io.ktor.util.network.UnresolvedAddressException
 import kotlinx.coroutines.ensureActive

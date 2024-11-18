@@ -1,4 +1,4 @@
-package com.artemklymenko.mycryptotracker.crypto.core.domain.util
+package com.artemklymenko.mycryptotracker.core.domain.util
 
 enum class NetworkError: Error {
     REQUEST_TIMEOUT,
