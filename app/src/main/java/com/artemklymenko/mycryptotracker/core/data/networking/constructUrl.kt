@@ -1,4 +1,4 @@
-package com.artemklymenko.mycryptotracker.crypto.core.data.networking
+package com.artemklymenko.mycryptotracker.core.data.networking
 
 import com.artemklymenko.mycryptotracker.BuildConfig
 
