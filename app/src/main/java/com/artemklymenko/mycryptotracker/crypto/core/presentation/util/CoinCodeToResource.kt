@@ -1,4 +1,4 @@
-package com.artemklymenko.mycryptotracker.ui.util
+package com.artemklymenko.mycryptotracker.crypto.core.presentation.util
 
 import com.artemklymenko.mycryptotracker.R
 

@@ -1,4 +1,4 @@
-package com.artemklymenko.mycryptotracker.ui.util
+package com.artemklymenko.mycryptotracker.crypto.core.domain.util
 
 typealias DomainError = Error
 
