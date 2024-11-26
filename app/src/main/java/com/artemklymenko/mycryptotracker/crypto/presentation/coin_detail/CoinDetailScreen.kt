@@ -40,7 +40,10 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.artemklymenko.mycryptotracker.R
+import com.artemklymenko.mycryptotracker.core.presentation.util.getUserFriendlyIntervals
 import com.artemklymenko.mycryptotracker.crypto.presentation.coin_detail.components.InfoCard
+import com.artemklymenko.mycryptotracker.crypto.presentation.coin_detail.components.TimeCategories
+import com.artemklymenko.mycryptotracker.crypto.presentation.coin_list.CoinListAction
 import com.artemklymenko.mycryptotracker.crypto.presentation.coin_list.CoinListState
 import com.artemklymenko.mycryptotracker.crypto.presentation.coin_list.components.previewCoin
 import com.artemklymenko.mycryptotracker.crypto.presentation.models.toDisplayableNumber
@@ -50,8 +53,10 @@ import com.artemklymenko.mycryptotracker.ui.theme.greenBackground
 @Composable
 fun CoinDetailScreen(
     state: CoinListState,
+    onAction: (CoinListAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val timeIntervals = getUserFriendlyIntervals()
     val contentColor = if(isSystemInDarkTheme()){
         Color.White
     } else {
@@ -127,6 +132,15 @@ fun CoinDetailScreen(
                     contentColor = contentColor
                 )
             }
+            TimeCategories(
+                tags = timeIntervals.values.toList(),
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
+            ) { selectedTag ->
+                val selectedInterval = timeIntervals.entries.firstOrNull { it.value == selectedTag }?.key
+                if (selectedInterval != null) {
+                    onAction(CoinListAction.OnIntervalChange(selectedInterval))
+                }
+            }
             AnimatedVisibility(
                 visible = coin.coinPriceHistory.isNotEmpty()
             ) {
@@ -186,7 +200,8 @@ private fun CoinDetailScreenPreview() {
             modifier = Modifier
                 .background(
                     MaterialTheme.colorScheme.background
-                )
+                ),
+            onAction = {}
         )
     }
 }
