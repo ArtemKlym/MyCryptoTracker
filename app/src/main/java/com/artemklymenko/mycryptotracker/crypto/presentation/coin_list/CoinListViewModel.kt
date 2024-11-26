@@ -40,16 +40,61 @@ class CoinListViewModel(
             is CoinListAction.OnCoinClick -> {
                 selectCoin(action.coinUi)
             }
+            is CoinListAction.OnIntervalChange -> {
+                setInterval(action.interval)
+            }
+        }
+    }
+
+    private fun setInterval(interval: String) {
+        _state.update { it.copy(selectedInterval = interval) }
+
+        val selectedCoin = _state.value.selectedCoin ?: return
+
+        viewModelScope.launch {
+            coinDataSource
+                .getCoinHistory(
+                    coinId = selectedCoin.id,
+                    interval = interval,
+                    start = ZonedDateTime.now().minusDays(5),
+                    end = ZonedDateTime.now()
+                )
+                .onSuccess { history ->
+                    val dataPoints = history
+                        .sortedBy { it.dateTime }
+                        .map {
+                            DataPoint(
+                                x = it.dateTime.hour.toFloat(),
+                                y = it.priceUsd.toFloat(),
+                                xLabel = DateTimeFormatter
+                                    .ofPattern("ha\nM/d")
+                                    .format(it.dateTime)
+                            )
+                        }
+
+                    _state.update {
+                        it.copy(
+                            selectedCoin = it.selectedCoin?.copy(
+                                coinPriceHistory = dataPoints
+                            )
+                        )
+                    }
+                }
+                .onError { error ->
+                    _events.send(CoinListEvent.Error(error))
+                }
         }
     }
 
     private fun selectCoin(coinUi: CoinUi) {
+        val interval = _state.value.selectedInterval
         _state.update { it.copy(selectedCoin = coinUi) }
 
         viewModelScope.launch {
             coinDataSource
                 .getCoinHistory(
                     coinId = coinUi.id,
+                    interval = interval,
                     start = ZonedDateTime.now().minusDays(5),
                     end = ZonedDateTime.now()
                 )

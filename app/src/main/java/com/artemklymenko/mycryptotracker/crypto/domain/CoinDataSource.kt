@@ -8,6 +8,7 @@ interface CoinDataSource {
     suspend fun getCoins(): Result<List<Coin>, NetworkError>
     suspend fun getCoinHistory(
         coinId: String,
+        interval: String,
         start: ZonedDateTime,
         end: ZonedDateTime
     ): Result<List<CoinPrice>, NetworkError>

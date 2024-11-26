@@ -56,6 +56,7 @@ fun AdaptiveCoinListDetailPane(
                                     pane = ListDetailPaneScaffoldRole.Detail
                                 )
                             }
+                            is CoinListAction.OnIntervalChange -> {}
                         }
                     }
                 )
@@ -63,7 +64,10 @@ fun AdaptiveCoinListDetailPane(
         },
         detailPane = {
             AnimatedPane {
-                CoinDetailScreen(state = state)
+                CoinDetailScreen(
+                    state = state,
+                    onAction = viewModel::onAction
+                )
             }
         },
         modifier = modifier
