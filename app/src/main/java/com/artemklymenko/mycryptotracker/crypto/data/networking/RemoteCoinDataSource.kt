@@ -33,6 +33,7 @@ class RemoteCoinDataSource(
 
     override suspend fun getCoinHistory(
         coinId: String,
+        interval: String,
         start: ZonedDateTime,
         end: ZonedDateTime
     ): Result<List<CoinPrice>, NetworkError> {
@@ -48,7 +49,7 @@ class RemoteCoinDataSource(
             httpClient.get(
                 urlString = constructUrl("/assets/$coinId/history")
             ) {
-                parameter("interval", "h6")
+                parameter("interval", interval)
                 parameter("start", startMills)
                 parameter("end", endMills)
             }
