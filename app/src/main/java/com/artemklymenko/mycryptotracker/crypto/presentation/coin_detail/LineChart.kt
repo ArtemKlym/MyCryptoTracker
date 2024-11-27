@@ -1,5 +1,6 @@
 package com.artemklymenko.mycryptotracker.crypto.presentation.coin_detail
 
+import android.graphics.RectF
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
@@ -29,6 +30,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.artemklymenko.mycryptotracker.crypto.domain.CoinPrice
+import com.artemklymenko.mycryptotracker.crypto.presentation.coin_detail.components.BezierConfiguration
 import com.artemklymenko.mycryptotracker.ui.theme.MyCryptoTrackerTheme
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -81,7 +83,7 @@ fun LineChart(
     var isShowingDataPoints by remember {
         mutableStateOf(selectedDataPoint != null)
     }
-    
+
     Canvas(
         modifier = modifier
             .fillMaxSize()
@@ -259,32 +261,28 @@ fun LineChart(
             )
         }
 
-        val conPoints1 = mutableListOf<DataPoint>()
-        val conPoints2 = mutableListOf<DataPoint>()
-        for(i in 1 until drawPoints.size) {
-            val p0 = drawPoints[i - 1]
-            val p1 = drawPoints[i]
-
-            val x = (p1.x + p0.x) / 2f
-            val y1 = p0.y
-            val y2 = p1.y
-
-            conPoints1.add(DataPoint(x, y1, ""))
-            conPoints2.add(DataPoint(x, y2, ""))
-        }
+        val bezierConfig = BezierConfiguration()
+        val bounds = RectF(viewPortLeftX, viewPortTopY, viewPortRightX, viewPortBottomY)
+        val controlPoints = bezierConfig.configureControlPoints(drawPoints, bounds)
 
         val linePath = Path().apply {
-            if(drawPoints.isNotEmpty()) {
-                moveTo(drawPoints.first().x, drawPoints.first().y)
+            if (drawPoints.isNotEmpty()) {
+                moveTo(
+                    x = drawPoints.first().x.coerceIn(bounds.left, bounds.right),
+                    y = drawPoints.first().y.coerceIn(bounds.top, bounds.bottom)
+                )
 
-                for(i in 1 until drawPoints.size) {
+                for (i in 1 until drawPoints.size) {
+                    val firstControlPoint = controlPoints[2 * (i - 1)]
+                    val secondControlPoint = controlPoints[2 * (i - 1) + 1]
+
                     cubicTo(
-                        x1 = conPoints1[i - 1].x,
-                        y1 = conPoints1[i - 1].y,
-                        x2 = conPoints2[i - 1].x,
-                        y2 = conPoints2[i - 1].y,
-                        x3 = drawPoints[i].x,
-                        y3 = drawPoints[i].y
+                        x1 = firstControlPoint.x.coerceIn(bounds.left, bounds.right),
+                        y1 = firstControlPoint.y.coerceIn(bounds.top, bounds.bottom),
+                        x2 = secondControlPoint.x.coerceIn(bounds.left, bounds.right),
+                        y2 = secondControlPoint.y.coerceIn(bounds.top, bounds.bottom),
+                        x3 = drawPoints[i].x.coerceIn(bounds.left, bounds.right),
+                        y3 = drawPoints[i].y.coerceIn(bounds.top, bounds.bottom)
                     )
                 }
             }
@@ -358,7 +356,7 @@ private fun LineChartPreview() {
             }
         }
         val style = ChartStyle(
-            chartLineColor = Color.Black,
+            chartLineColor = Color.Green,
             unselectedColor = Color(0xFF7C7C7C),
             selectedColor = Color.Black,
             helperLinesThicknessPx = 3f,
