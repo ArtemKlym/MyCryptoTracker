@@ -43,6 +43,9 @@ class CoinListViewModel(
             is CoinListAction.OnIntervalChange -> {
                 setInterval(action.interval)
             }
+            is CoinListAction.OnSearchChange -> {
+                filteredCoins(action.input)
+            }
         }
     }
 
@@ -125,6 +128,16 @@ class CoinListViewModel(
         }
     }
 
+    private fun filteredCoins(input: String) {
+        val query = input.trim().lowercase()
+        val filteredList = _state.value.coins.filter { coin ->
+            coin.name.lowercase().contains(query) || coin.symbol.lowercase().contains(query)
+        }
+        _state.update {
+            it.copy(filteredCoins = filteredList)
+        }
+    }
+
     private fun loadCoins() {
         viewModelScope.launch {
             _state.update {
@@ -138,7 +151,8 @@ class CoinListViewModel(
                     _state.update {
                         it.copy(
                             isLoading = false,
-                            coins = coins.map { it.toCoinUi() }
+                            coins = coins.map { it.toCoinUi() },
+                            filteredCoins = coins.map { it.toCoinUi() }
                         )
                     }
                 }
