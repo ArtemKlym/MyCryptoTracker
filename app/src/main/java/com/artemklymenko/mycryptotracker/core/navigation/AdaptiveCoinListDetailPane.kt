@@ -57,6 +57,7 @@ fun AdaptiveCoinListDetailPane(
                                 )
                             }
                             is CoinListAction.OnIntervalChange -> {}
+                            is CoinListAction.OnSearchChange -> {}
                         }
                     }
                 )

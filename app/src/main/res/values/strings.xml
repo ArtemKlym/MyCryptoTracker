@@ -8,4 +8,6 @@
     <string name="market_cap">Market Cap</string>
     <string name="price">Price</string>
     <string name="change_last_24hr">Change last 24hr</string>
+    <string name="search">Search</string>
+    <string name="clear">Clear</string>
 </resources>
