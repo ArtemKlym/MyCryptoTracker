@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.artemklymenko.mycryptotracker.core.domain.util.onError
 import com.artemklymenko.mycryptotracker.core.domain.util.onSuccess
+import com.artemklymenko.mycryptotracker.core.presentation.util.setStartZonedDateTime
 import com.artemklymenko.mycryptotracker.crypto.domain.CoinDataSource
 import com.artemklymenko.mycryptotracker.crypto.presentation.coin_detail.DataPoint
 import com.artemklymenko.mycryptotracker.crypto.presentation.models.CoinUi
@@ -59,7 +60,7 @@ class CoinListViewModel(
                 .getCoinHistory(
                     coinId = selectedCoin.id,
                     interval = interval,
-                    start = ZonedDateTime.now().minusDays(5),
+                    start = setStartZonedDateTime(interval),
                     end = ZonedDateTime.now()
                 )
                 .onSuccess { history ->
@@ -98,7 +99,7 @@ class CoinListViewModel(
                 .getCoinHistory(
                     coinId = coinUi.id,
                     interval = interval,
-                    start = ZonedDateTime.now().minusDays(5),
+                    start = setStartZonedDateTime(interval),
                     end = ZonedDateTime.now()
                 )
                 .onSuccess { history ->
