@@ -8,6 +8,6 @@ data class CoinListState(
     val isLoading: Boolean = false,
     val coins: List<CoinUi> = emptyList(),
     val filteredCoins: List<CoinUi> = emptyList(),
-    val selectedInterval: String = "m15",
+    val selectedInterval: String = "m1",
     val selectedCoin: CoinUi? = null
 )
