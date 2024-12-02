@@ -93,6 +93,9 @@ fun SearchBarView(
                     coinUi = coinUi,
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {
+                        search = coinUi.name
+                        isActive = false
+                        focusManager.clearFocus()
                         onAction(CoinListAction.OnCoinClick(coinUi))
                     }
                 )
