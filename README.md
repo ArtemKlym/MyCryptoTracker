@@ -1,5 +1,5 @@
 # MyCryptoTracker
-
+CryptoTracker is an Android application that allows users to view real-time information about various cryptocurrencies. The app provides detailed information for each currency, including its current price and historical price data displayed in an interactive canvas graph.
 ## Tech Stack
 * Kotlin
 * Jetpack Compose for UI
