@@ -38,12 +38,18 @@ fun Coin.toCoinUi(): CoinUi {
 }
 
 fun Double.toDisplayableNumber(): DisplayableNumber {
-    val formatter = NumberFormat.getNumberInstance(Locale.getDefault()).apply {
-        minimumFractionDigits = 2
-        maximumFractionDigits = 2
+    val formatted =  try {
+        val formatter = NumberFormat.getNumberInstance(Locale.getDefault()).apply {
+            minimumFractionDigits = 2
+            maximumFractionDigits = 2
+        }
+        formatter.format(this)
+    } catch(e: Exception) {
+        //Fallback for unit tests
+        "%.2f".format(this)
     }
     return DisplayableNumber(
         value = this,
-        formatted = formatter.format(this)
+        formatted = formatted
     )
 }

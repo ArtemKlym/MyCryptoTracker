@@ -1,8 +1,5 @@
-package com.artemklymenko.mycryptotracker
+package com.artemklymenko.mycryptotracker.core.data.networking
 
-import com.artemklymenko.mycryptotracker.core.data.networking.constructUrl
-import com.artemklymenko.mycryptotracker.core.data.networking.responseToResult
-import com.artemklymenko.mycryptotracker.core.data.networking.safeCall
 import com.artemklymenko.mycryptotracker.core.domain.util.NetworkError
 import com.artemklymenko.mycryptotracker.core.domain.util.Result
 import io.ktor.client.call.body
