@@ -1,11 +1,12 @@
 package com.artemklymenko.mycryptotracker.crypto.presentation.coin_list
 
 import com.artemklymenko.mycryptotracker.crypto.domain.Coin
+import com.artemklymenko.mycryptotracker.crypto.domain.CoinPrice
 import com.artemklymenko.mycryptotracker.crypto.domain.FakeCoinDataSource
-import com.artemklymenko.mycryptotracker.crypto.presentation.coin_list.CoinListState
-import com.artemklymenko.mycryptotracker.crypto.presentation.coin_list.CoinListViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -16,10 +17,9 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
+import java.time.ZonedDateTime
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CoinListViewModelTest {
@@ -63,5 +63,35 @@ class CoinListViewModelTest {
         val finalState = collectedStates.last()
         assertEquals(2, finalState.coins.size)
         assertEquals("Bitcoin", finalState.coins[0].name)
+    }
+
+    @Test
+    fun `setInterval loads history for selected coin`() = testScope.runTest {
+        val coinId = "btc"
+        val now = ZonedDateTime.now()
+
+        val history = listOf(
+            CoinPrice(dateTime = now.minusMinutes(3), priceUsd = 47000.0),
+            CoinPrice(dateTime = now.minusMinutes(2), priceUsd = 48000.0),
+            CoinPrice(dateTime = now.minusMinutes(1), priceUsd = 49000.0),
+        )
+
+        fakeCoinDataSource.setCoinHistory(coinId, history)
+
+        viewModel.state
+            .filter { it.coins.isNotEmpty() }
+            .first()
+
+        val coinUi = viewModel.state.value.coins.first { it.id == coinId }
+
+        viewModel.onAction(CoinListAction.OnCoinClick(coinUi))
+        advanceUntilIdle()
+
+        viewModel.onAction(CoinListAction.OnIntervalChange("m5"))
+        advanceUntilIdle()
+
+        val state = viewModel.state.value
+        assertEquals("m1", state.selectedInterval)
+        assertEquals(3, state.selectedCoin?.coinPriceHistory?.size)
     }
 }
