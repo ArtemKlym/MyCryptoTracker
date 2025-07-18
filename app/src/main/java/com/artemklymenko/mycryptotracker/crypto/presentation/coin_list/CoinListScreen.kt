@@ -15,6 +15,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.artemklymenko.mycryptotracker.core.presentation.util.SearchBarView
@@ -54,7 +55,9 @@ fun CoinListScreen(
                 items(state.coins) { coinUi ->
                     CoinListItem(
                         coinUi = coinUi,
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag("coinItem_${coinUi.id}"),
                         onClick = {
                             onAction(CoinListAction.OnCoinClick(coinUi))
                         }
@@ -63,7 +66,6 @@ fun CoinListScreen(
                 }
             }
         }
-
     }
 }
 
